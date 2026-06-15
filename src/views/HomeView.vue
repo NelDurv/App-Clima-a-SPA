@@ -4,23 +4,37 @@
       <header class="py-3 text-center text-white">
         <h1 class="display-5">Clima en Ciudades de Chile</h1>
         <p class="lead">Datos actualizados desde Open-Meteo</p>
-        
-        <!-- Búsqueda, unidad y botón de alerta de cultivos -->
+
+        <!-- Búsqueda, unidad mejorada y botón de alerta -->
         <div class="row justify-content-center mt-3 g-2">
           <div class="col-md-4 col-12">
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
-              <input type="text" class="form-control search-input" placeholder="Buscar ciudad..." v-model="searchTerm">
+              <input
+                type="text"
+                class="form-control search-input"
+                placeholder="Buscar ciudad..."
+                v-model="searchTerm"
+              />
             </div>
           </div>
           <div class="col-md-3 col-6">
-            <button class="btn btn-light w-100" @click="toggleUnit">
-              <i class="fas fa-thermometer-half me-1"></i> {{ unitSymbol }} 
+            <button
+              class="btn btn-light w-100"
+              @click="toggleUnit"
+              :title="`Cambiar a ${unitSymbol === '°C' ? 'Fahrenheit' : 'Celsius'}`"
+            >
+              <i class="fas fa-thermometer-half me-1"></i>
+              Cambiar a {{ unitSymbol === '°C' ? '°F' : '°C' }}
               <i class="fas fa-exchange-alt ms-1"></i>
             </button>
           </div>
           <div class="col-md-4 col-6">
-            <button class="btn btn-danger w-100" @click="mostrarAlertaCultivos">
+            <button
+              class="btn btn-danger w-100"
+              @click="mostrarAlertaCultivos"
+              title="Ver alertas de bajas temperaturas para cultivos"
+            >
               <i class="fas fa-leaf me-1"></i> Peligro para Cultivos
             </button>
           </div>
@@ -32,14 +46,17 @@
         </div>
       </header>
 
+      <!-- Loading y grilla... (el resto queda igual) -->
       <div v-if="loadingCities" class="text-center py-5">
-        <div class="spinner-border text-light" role="status"><span class="visually-hidden">Cargando...</span></div>
+        <div class="spinner-border text-light" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
         <p class="text-white mt-3">Cargando clima de ciudades...</p>
       </div>
 
       <div v-else class="grid-container">
-        <WeatherCard 
-          v-for="clima in filteredClimas" 
+        <WeatherCard
+          v-for="clima in filteredClimas"
           :key="clima.nombre"
           :clima="clima"
           :convertTemp="convertTemp"
@@ -52,15 +69,26 @@
       </div>
     </div>
 
-    <!-- Modal de alerta para cultivos -->
-    <div class="modal fade" id="modalCultivos" tabindex="-1" aria-labelledby="modalCultivosLabel" aria-hidden="true">
+    <!-- Modal de alerta para cultivos (sin cambios) -->
+    <div
+      class="modal fade"
+      id="modalCultivos"
+      tabindex="-1"
+      aria-labelledby="modalCultivosLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-danger text-white">
             <h5 class="modal-title" id="modalCultivosLabel">
               <i class="fas fa-exclamation-triangle me-2"></i>¡Alerta! Riesgo para Cultivos
             </h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
           </div>
           <div class="modal-body">
             <div v-if="ciudadesEnPeligro.length === 0" class="text-center">
@@ -68,14 +96,25 @@
               <p>No se registran temperaturas peligrosas para cultivos en ninguna ciudad.</p>
             </div>
             <div v-else>
-              <p><strong>Las siguientes ciudades presentan temperaturas mínimas bajo 2°C, lo que puede dañar los cultivos:</strong></p>
+              <p>
+                <strong
+                  >Las siguientes ciudades presentan temperaturas mínimas bajo 2°C, lo que puede
+                  dañar los cultivos:</strong
+                >
+              </p>
               <ul class="list-group">
-                <li v-for="ciudad in ciudadesEnPeligro" :key="ciudad.nombre" class="list-group-item d-flex justify-content-between align-items-center">
+                <li
+                  v-for="ciudad in ciudadesEnPeligro"
+                  :key="ciudad.nombre"
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
                   {{ ciudad.nombre }}
                   <span class="badge bg-primary rounded-pill">{{ ciudad.tempMin }}°C</span>
                 </li>
               </ul>
-              <p class="mt-3 small text-muted">* Temperaturas iguales o inferiores a 2°C ponen en riesgo a cultivos sensibles.</p>
+              <p class="mt-3 small text-muted">
+                * Temperaturas iguales o inferiores a 2°C ponen en riesgo a cultivos sensibles.
+              </p>
             </div>
           </div>
           <div class="modal-footer">
@@ -93,11 +132,17 @@ import { useWeather } from '../composables/useWeather'
 import { useUnit } from '../composables/useUnit'
 import WeatherCard from '../components/WeatherCard.vue'
 
-// No importamos Modal de bootstrap porque usamos la versión global del CDN
-
 const ciudades = [
-  "Arica", "Antofagasta", "Iquique", "La Serena", "Valparaíso",
-  "Santiago", "Rancagua", "Concepción", "Temuco", "Puerto Montt"
+  'Arica',
+  'Antofagasta',
+  'Iquique',
+  'La Serena',
+  'Valparaíso',
+  'Santiago',
+  'Rancagua',
+  'Concepción',
+  'Temuco',
+  'Puerto Montt',
 ]
 
 const { fetchCurrentWeather } = useWeather()
@@ -106,44 +151,42 @@ const { unitSymbol, toggleUnit, convertTemp } = useUnit()
 const climas = ref([])
 const loadingCities = ref(true)
 const apiConnected = ref(true)
-const searchTerm = ref("")
+const searchTerm = ref('')
 const ciudadesEnPeligro = ref([])
 
 const filteredClimas = computed(() => {
   if (!searchTerm.value) return climas.value
   const term = searchTerm.value.toLowerCase()
-  return climas.value.filter(c => c.nombre.toLowerCase().includes(term))
+  return climas.value.filter((c) => c.nombre.toLowerCase().includes(term))
 })
 
-// Función para calcular la temperatura mínima simulada (misma lógica que en WeatherCard)
 const calcularTempMin = (tempActual) => {
   return tempActual - (Math.floor(Math.random() * 5) + 1)
 }
 
-// Función que analiza y muestra el modal usando el objeto global bootstrap
 const mostrarAlertaCultivos = () => {
   const peligro = []
   for (const clima of climas.value) {
     const tempMin = calcularTempMin(clima.temperatura)
-    if (tempMin < 2) {  // menor a 2°C (rango hasta -10°C)
+    if (tempMin < 2) {
       peligro.push({
         nombre: clima.nombre,
-        tempMin: tempMin
+        tempMin: tempMin,
       })
     }
   }
   ciudadesEnPeligro.value = peligro
-  
-  // Usar el objeto global bootstrap (disponible por el CDN en index.html)
+
   const modalElement = document.getElementById('modalCultivos')
   if (modalElement && window.bootstrap) {
     const modal = new window.bootstrap.Modal(modalElement)
     modal.show()
   } else {
-    // Fallback en caso de que Bootstrap no esté cargado (no debería ocurrir)
-    alert(ciudadesEnPeligro.value.length 
-      ? `Ciudades en riesgo: ${ciudadesEnPeligro.value.map(c => `${c.nombre} (${c.tempMin}°C)`).join(', ')}`
-      : 'No hay peligro para cultivos.')
+    alert(
+      ciudadesEnPeligro.value.length
+        ? `Ciudades en riesgo: ${ciudadesEnPeligro.value.map((c) => `${c.nombre} (${c.tempMin}°C)`).join(', ')}`
+        : 'No hay peligro para cultivos.',
+    )
   }
 }
 
