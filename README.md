@@ -1,66 +1,100 @@
-# modulo6-portafolio
+# App del Clima Chile – Vue 3 SPA
 
-This template should help get you started developing with Vue 3 in Vite.
+Aplicación meteorológica de una sola página (SPA) desarrollada con **Vue 3 Composition API** y **Vue Router**. Muestra el clima actual de 10 ciudades chilenas y el pronóstico detallado a 6 días, con estadísticas y alertas. Incluye un botón especial para **alertar a agricultores** sobre temperaturas peligrosas para los cultivos.
 
-## Recommended IDE Setup
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Recommended Browser Setup
+## Tecnologías utilizadas
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Vue 3** – Framework progresivo con Composition API.
+- **Vue Router 4** – Navegación SPA sin recarga de página.
+- **Bootstrap 5** – Estilos, grid responsive y componentes (modal).
+- **Font Awesome 6** – Iconografía climática y de interfaz.
+- **Open-Meteo API** – Datos meteorológicos reales (current + 7‑day forecast).
+- **Vite** – Empaquetador y servidor de desarrollo ultrarrápido.
 
-## Customize configuration
+## 📁 Estructura del proyecto
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+vue-clima-chile/
+├── index.html
+├── package.json
+├── vite.config.js
+├── src/
+│ ├── main.js # Punto de entrada, registra router
+│ ├── App.vue # Componente raíz (navbar + router-view)
+│ ├── router/
+│ │ └── index.js # Rutas: home y detalle dinámico
+│ ├── views/
+│ │ ├── HomeView.vue # Listado de ciudades + filtro + botones
+│ │ └── DetailView.vue # Pronóstico 6 días + estadísticas + alertas
+│ ├── components/
+│ │ ├── WeatherCard.vue # Tarjeta individual de ciudad (Home)
+│ │ └── ForecastCard.vue # Tarjeta de día (Detail)
+│ ├── composables/
+│ │ ├── useWeather.js # Lógica de llamadas a API y fallback
+│ │ └── useUnit.js # Conversión °C / °F
+│ └── assets/
+│ ├── css/
+│ │ └── style.css # Estilos originales (tarjetas, grid, etc.)
+│ └── img/ # Imágenes de fondo por tipo de clima
 
-## Project Setup
+---
 
-```sh
-npm install
-```
+##  Funcionalidades principales
 
-### Compile and Hot-Reload for Development
+###  Página de inicio (Home)
 
-```sh
-npm run dev
-```
+- Muestra **10 ciudades chilenas** con:
+  - Temperatura actual.
+  - Temperaturas máximas y mínimas estimadas.
+  - Descripción del clima (soleado, nublado, lluvioso, etc.).
+  - Imagen de fondo representativa.
+- **Buscador** en tiempo real (filtra ciudades por nombre).
+- **Selector de unidad** (°C / °F) – dos‑way binding con v‑model.
+- **Botón especial: "Peligro para Cultivos"** – analiza todas las ciudades y muestra en un modal aquellas con temperaturas mínimas inferiores a 2°C (rango 2°C a -10°C), alertando sobre riesgo para agricultura.
+- Navegación al detalle mediante `router.push()` (sin recarga).
 
-### Compile and Minify for Production
+###  Página de detalle (Detalle de ciudad)
 
-```sh
-npm run build
-```
+- Ruta dinámica `/lugar/:nombre`.
+- Pronóstico **6 días** (temperatura máx./mín., tipo de clima, icono, día de semana).
+- **Estadísticas semanales**:
+  - Temperatura máxima, mínima y promedio.
+  - Número de días soleados y lluviosos.
+- **Alertas climáticas** automáticas (calor extremo, frío, semana lluviosa).
+- Botón **"Volver"** que utiliza `$router.go(-1)` para mantener historial sin recargar.
 
-### Run Headed Component Tests with [Cypress Component Testing](https://on.cypress.io/component)
+###  Consumo de API
 
-```sh
-npm run test:unit:dev # or `npm run test:unit` for headless testing
-```
+- Uso de **Open‑Meteo** (gratuita, sin clave).
+- Fallback a datos locales si falla la conexión o la ciudad no está en el mapa.
+- Indicador visual de estado (conectado / datos locales).
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+###  Estilos
 
-```sh
-npm run test:e2e:dev
-```
+- Responsive con **CSS Grid** y **Flexbox**.
+- Tarjetas con efecto hover y degradados.
+- Totalmente adaptado a móviles, tablets y desktop.
 
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
+---
 
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+## GitHub
 
-```sh
-npm run build
-npm run test:e2e
-```
+https://github.com/NelDurv/App-Clima-a-SPA
 
-### Lint with [ESLint](https://eslint.org/)
+https://github.com/NelDurv/App-Clima-a-SPA/commit/123cae4e53476b4527abb6ed04d0b36c82d1c80f
 
-```sh
-npm run lint
-```
+## Créditos
+
+Datos meteorológicos: Open‑Meteo
+
+Iconos: Font Awesome
+
+Framework CSS: Bootstrap
+
+Desarrollado como parte del Módulo 6 – Vue.js SPA
+
+## Licencia
+
+Proyecto educativo – sin fines comerciales.
+© Neldur 2026
