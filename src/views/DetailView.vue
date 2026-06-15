@@ -4,9 +4,9 @@
       <h1 class="display-6">
         <i class="fas fa-calendar-alt me-2"></i> Pronóstico 6 días: {{ nombreCiudad }}
       </h1>
-      <router-link to="/" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Volver al inicio
-      </router-link>
+      <button class="btn btn-secondary" @click="$router.go(-1)">
+        <i class="fas fa-arrow-left"></i> Volver
+      </button>
     </div>
 
     <!-- Loading -->
@@ -22,7 +22,7 @@
       <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
       <h3>Error al cargar el pronóstico</h3>
       <p>{{ error }}</p>
-      <router-link to="/" class="btn btn-primary mt-3">Volver al inicio</router-link>
+      <button class="btn btn-primary mt-3" @click="$router.push('/')">Volver al inicio</button>
     </div>
 
     <!-- Pronóstico y estadísticas -->
@@ -98,12 +98,13 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { useWeather, capitalizar } from '../composables/useWeather'
+import { useRoute, useRouter } from 'vue-router'
+import { useWeather } from '../composables/useWeather'
 import { useUnit } from '../composables/useUnit'
 import ForecastCard from '../components/ForecastCard.vue'
 
 const route = useRoute()
+const router = useRouter()
 const nombreCiudad = computed(() => decodeURIComponent(route.params.nombre))
 const { fetchForecast, loading, error } = useWeather()
 const { convertTemp, unitSymbol } = useUnit()

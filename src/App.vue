@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-// App root with router-view
+// Componente raíz con router-view
 </script>
 
 <style scoped>

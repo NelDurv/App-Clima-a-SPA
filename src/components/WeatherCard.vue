@@ -46,7 +46,6 @@ const props = defineProps({
 
 const router = useRouter()
 
-// Imagen local según tipo de clima
 const imagenesClima = {
   "soleado": "src/assets/img/dia soleado.jpeg",
   "parcial despejado": "src/assets/img/parcial_despejado.jpeg",
@@ -68,7 +67,6 @@ const iconosClima = {
 const imagenClima = computed(() => imagenesClima[props.clima.tipoClima] || imagenesClima["parcial despejado"])
 const iconoClima = computed(() => iconosClima[props.clima.tipoClima] || "fa-cloud")
 
-// Temp max/min simuladas (misma lógica original)
 const tempMax = computed(() => props.clima.temperatura + Math.floor(Math.random() * 4) + 2)
 const tempMin = computed(() => props.clima.temperatura - Math.floor(Math.random() * 5) - 1)
 

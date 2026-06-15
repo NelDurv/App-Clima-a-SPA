@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 
-// City coordinates (same as original)
+// Coordenadas de ciudades
 const ciudadesCoord = {
     "Arica": { lat: -18.4780, lon: -70.3210 },
     "Antofagasta": { lat: -23.6500, lon: -70.4000 },
@@ -14,7 +14,7 @@ const ciudadesCoord = {
     "Puerto Montt": { lat: -41.4718, lon: -72.9394 }
 }
 
-// Fallback data (original)
+// Datos de respaldo local
 const datosLocal = {
     "Arica": { temp: 22, clima: "soleado" },
     "Antofagasta": { temp: 20, clima: "parcial despejado" },
@@ -41,7 +41,6 @@ export function useWeather() {
     const loading = ref(false)
     const error = ref(null)
 
-    // Obtener clima actual de una ciudad (similar a app.js)
     const fetchCurrentWeather = async (ciudad) => {
         try {
             const coords = ciudadesCoord[ciudad.nombre]
@@ -52,7 +51,6 @@ export function useWeather() {
             const data = await resp.json()
             const temp = Math.round(data.current.temperature_2m)
             const humedad = Math.round(data.current.relative_humidity_2m)
-            const viento = Math.round(data.current.wind_speed_10m)
 
             let tipoClima = "parcial despejado"
             if (temp > 25) tipoClima = "soleado"
@@ -66,7 +64,7 @@ export function useWeather() {
                 nombre: ciudad.nombre,
                 temperatura: temp,
                 humedad,
-                viento,
+                viento: Math.round(data.current.wind_speed_10m),
                 tipoClima,
                 esReal: true
             }
@@ -84,7 +82,6 @@ export function useWeather() {
         }
     }
 
-    // Obtener pronóstico 6 días
     const fetchForecast = async (nombreCiudad) => {
         loading.value = true
         error.value = null
@@ -138,7 +135,6 @@ export function useWeather() {
     }
 }
 
-// Helper para capitalizar
 export function capitalizar(texto) {
     if (!texto) return ""
     return texto.charAt(0).toUpperCase() + texto.slice(1)
